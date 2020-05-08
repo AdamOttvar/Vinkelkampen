@@ -50,4 +50,10 @@ public class ParticipantsActivity extends AppCompatActivity implements RecyclerA
         Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
     }
 
+    /** Called when the user hits the "start round" button **/
+    public void startRound(View view) {
+        Intent intent = new Intent(this, DrawActivity.class);
+        startActivity(intent);
+    }
+
 }

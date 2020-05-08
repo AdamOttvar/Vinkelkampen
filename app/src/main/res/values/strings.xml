@@ -3,4 +3,6 @@
     <string name="new_round">Ny omgång</string>
     <string name="kp_styret">KP-styret</string>
     <string name="participants">Deltagare</string>
+    <string name="draw_angle">Rita vinkel</string>
+    <string name="start">Starta</string>
 </resources>
