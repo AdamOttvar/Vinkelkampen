@@ -85,6 +85,38 @@ public class AngleDrawingView extends View {
     }
 
     /**
+     * Get the current angle between the lines, if the lines exists
+     * @return angle
+     */
+    public double getCurrentAngle() {
+        double angle = 0;
+        if (mCircleLines.size() == 2) {
+            angle = angleBetween2Lines(mCircleLines.get(0),mCircleLines.get(1));
+        }
+        return Math.toDegrees(angle);
+    }
+
+    /**
+     * Calculate the smallest angle between two lines.
+     * The y-positions are flipped since the y-axis is flipped in the view.
+     * @param line1 first line
+     * @param line2 second line
+     * @return the angle in radians
+     */
+    public static double angleBetween2Lines(CircleLine line1, CircleLine line2)
+    {
+        double angle1 = Math.atan2(line1.startY - line1.endY,
+                line1.endX - line1.startX);
+        double angle2 = Math.atan2(line2.startY - line2.endY,
+                line2.endX - line2.startX);
+
+        Log.w(TAG, "angle1: " + Math.toDegrees(angle1));
+        Log.w(TAG, "angle2: " + Math.toDegrees(angle2));
+        return Math.abs(angle1-angle2) < Math.PI ? Math.abs(angle1-angle2) : 2*Math.PI - Math.abs(angle1-angle2);
+
+    }
+
+    /**
      * Initiates the canvas with three circles connected with lines.
      */
     private void initCircles() {
@@ -99,7 +131,7 @@ public class AngleDrawingView extends View {
         newCircle = new CircleArea(this.centerX+100, this.centerY+100, DEFAULT_RADIUS);
         mCircles.put(2, newCircle);
 
-        mCircleLines.put(mCircleLines.size(), new CircleLine(this.centerX+100, this.centerY-100, this.centerX, this.centerY));
+        mCircleLines.put(mCircleLines.size(), new CircleLine(this.centerX, this.centerY,this.centerX+100, this.centerY-100));
         mCircleLines.put(mCircleLines.size(), new CircleLine(this.centerX, this.centerY, this.centerX+100, this.centerY+100));
     }
 
@@ -171,15 +203,15 @@ public class AngleDrawingView extends View {
                             case 0:
                                 Log.w(TAG, "Updating line 1");
                                 line = mCircleLines.get(0);
-                                line.startX = touchedCircle.centerX;
-                                line.startY = touchedCircle.centerY;
+                                line.endX = touchedCircle.centerX;
+                                line.endY = touchedCircle.centerY;
                                 mCircleLines.put(0, line);
                                 break;
                             case 1:
                                 Log.w(TAG, "Updating line 1 and 2");
                                 line = mCircleLines.get(0);
-                                line.endX = touchedCircle.centerX;
-                                line.endY = touchedCircle.centerY;
+                                line.startX = touchedCircle.centerX;
+                                line.startY = touchedCircle.centerY;
                                 mCircleLines.put(0, line);
                                 line = mCircleLines.get(1);
                                 line.startX = touchedCircle.centerX;

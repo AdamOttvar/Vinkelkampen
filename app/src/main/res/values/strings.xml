@@ -5,4 +5,5 @@
     <string name="participants">Deltagare</string>
     <string name="draw_angle">Rita vinkel</string>
     <string name="start">Starta</string>
+    <string name="deafult_angle">0,0</string>
 </resources>
