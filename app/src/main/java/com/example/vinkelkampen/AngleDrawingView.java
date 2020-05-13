@@ -1,5 +1,6 @@
 package com.example.vinkelkampen;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,9 +14,10 @@ import android.view.View;
 import java.util.HashMap;
 
 public class AngleDrawingView extends View {
+    private static boolean initiated = false;
 
-    private int centerX;
-    private int centerY;
+    private static int centerX;
+    private static int centerY;
 
     private static final String TAG = "CirclesDrawingView";
 
@@ -51,6 +53,16 @@ public class AngleDrawingView extends View {
 
     }
 
+    public static class DrawingData {
+        HashMap<Integer, CircleArea> mCircles;
+        HashMap<Integer, CircleLine> mCircleLines;
+
+        DrawingData(HashMap<Integer, CircleArea> circles, HashMap<Integer, CircleLine> circleLines) {
+            this.mCircles = circles;
+            this.mCircleLines = circleLines;
+        }
+    }
+
     /** Paint to draw circles */
     private Paint mCirclePaint;
     /** Paint to draw lines */
@@ -63,11 +75,14 @@ public class AngleDrawingView extends View {
     private static final int CIRCLES_LIMIT = 3;
 
     /** All available circles */
-    private HashMap<Integer, CircleArea> mCircles = new HashMap<Integer, CircleArea>(CIRCLES_LIMIT);
+    private static HashMap<Integer, CircleArea> mCircles = new HashMap<Integer, CircleArea>(CIRCLES_LIMIT);
     private Integer activeCircle;
 
     /** Lines between circles **/
-    private HashMap<Integer, CircleLine> mCircleLines = new HashMap<Integer, CircleLine>(CIRCLES_LIMIT-1);
+    private static HashMap<Integer, CircleLine> mCircleLines = new HashMap<Integer, CircleLine>(CIRCLES_LIMIT-1);
+
+    /** Holding all data needed to draw */
+    private static DrawingData drawingData;
 
     /** Constructor **/
     public AngleDrawingView(Context context, AttributeSet attrs) {
@@ -82,6 +97,14 @@ public class AngleDrawingView extends View {
         mLinePaint.setStrokeWidth(10);
         mLinePaint.setStyle(Paint.Style.STROKE);
 
+    }
+
+    /**
+     * Get method for the drawing data
+     * @return The drawing data needed to draw the angle.
+     */
+    public DrawingData getDrawingData() {
+        return drawingData;
     }
 
     /**
@@ -122,17 +145,20 @@ public class AngleDrawingView extends View {
     private void initCircles() {
         mCircles.clear();
         mCircleLines.clear();
-        CircleArea newCircle = new CircleArea(this.centerX+100, this.centerY-100, DEFAULT_RADIUS);
+        CircleArea newCircle = new CircleArea(centerX+100, centerY-100, DEFAULT_RADIUS);
         mCircles.put(0, newCircle);
 
-        newCircle = new CircleArea(this.centerX, this.centerY, DEFAULT_RADIUS);
+        newCircle = new CircleArea(centerX, centerY, DEFAULT_RADIUS);
         mCircles.put(1, newCircle);
 
-        newCircle = new CircleArea(this.centerX+100, this.centerY+100, DEFAULT_RADIUS);
+        newCircle = new CircleArea(centerX+100, centerY+100, DEFAULT_RADIUS);
         mCircles.put(2, newCircle);
 
-        mCircleLines.put(mCircleLines.size(), new CircleLine(this.centerX, this.centerY,this.centerX+100, this.centerY-100));
-        mCircleLines.put(mCircleLines.size(), new CircleLine(this.centerX, this.centerY, this.centerX+100, this.centerY+100));
+        mCircleLines.put(mCircleLines.size(), new CircleLine(centerX, centerY, centerX+100, centerY-100));
+        mCircleLines.put(mCircleLines.size(), new CircleLine(centerX, centerY, centerX+100, centerY+100));
+
+        drawingData = new DrawingData(mCircles, mCircleLines);
+        initiated = true;
     }
 
     @Override
@@ -155,6 +181,7 @@ public class AngleDrawingView extends View {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         boolean handled = false;
@@ -262,7 +289,6 @@ public class AngleDrawingView extends View {
      * @return {@link CircleArea} touched circle or null if no circle has been touched
      */
     private Integer getTouchedCircle(final int xTouch, final int yTouch) {
-        //CircleArea touched = null;
         Integer touchedNbr = null;
 
         for (Integer key : mCircles.keySet()) {
@@ -279,16 +305,19 @@ public class AngleDrawingView extends View {
 
     /**
      * Calculates the center point of the canvas and initiates circles.
-     * The circles will be initated more frequent than necessary.
+     * The circles will be initiated more frequent than necessary.
      */
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mMeasuredRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
-        this.centerX = getMeasuredWidth()/2;
-        this.centerY = getMeasuredHeight()/2;
-        // TODO: Smarter initiation of the circles. They are "reset" more frequent than necessary now
-        initCircles();
+
+        if (!initiated) {
+            centerX = getMeasuredWidth()/2;
+            centerY = getMeasuredHeight()/2;
+            // TODO: Smarter initiation of the circles. They are "reset" more frequent than necessary now
+            initCircles();
+        }
         invalidate();
     }
 }

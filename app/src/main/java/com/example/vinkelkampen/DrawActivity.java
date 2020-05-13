@@ -2,11 +2,16 @@ package com.example.vinkelkampen;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 public class DrawActivity extends AppCompatActivity {
+    public static final String EXTRA_DRAWING_DATA = "com.example.vinkelkampen.EXTRA_DRAWING";
     AngleDrawingView drawingView;
     TextView angleView;
 
@@ -22,9 +27,17 @@ public class DrawActivity extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         double currentAngle = drawingView.getCurrentAngle();
-        String stringAngle = Double.toString(currentAngle);
-        angleView.setText(stringAngle);
+        //String stringAngle = Double.toString(currentAngle);
+        Locale locale = new Locale("sv", "SE");
+        angleView.setText(String.format(locale, "%.2f", currentAngle));
 
         return super.onTouchEvent(event);
+    }
+
+    /** Called when the user hits the "guess angle" button **/
+    public void guessAngle(View view) {
+        Intent intent = new Intent(this, GuessActivity.class);
+
+        startActivity(intent);
     }
 }

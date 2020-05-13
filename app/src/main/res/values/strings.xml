@@ -6,4 +6,7 @@
     <string name="draw_angle">Rita vinkel</string>
     <string name="start">Starta</string>
     <string name="deafult_angle">0,0</string>
+    <string name="opposite_angle">Motsatt vinkel</string>
+    <string name="random_angle">Slumpad vinkel</string>
+    <string name="guess_angle">Gissa vinkel</string>
 </resources>
