@@ -2,6 +2,8 @@ package com.example.vinkelkampen;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,6 +17,9 @@ import java.util.HashMap;
 
 public class AngleDrawingView extends View {
     private static boolean initiated = false;
+    private static boolean hideAngle = false;
+
+    private static int ICON_HALF_SIZE = 200;
 
     private static int centerX;
     private static int centerY;
@@ -22,9 +27,10 @@ public class AngleDrawingView extends View {
     private static final String TAG = "CirclesDrawingView";
 
     private Rect mMeasuredRect = new Rect(0, 0, 1, 1);
+    private Rect iconRect = new Rect(centerX-ICON_HALF_SIZE, centerY-ICON_HALF_SIZE, centerX+ICON_HALF_SIZE, centerY+ICON_HALF_SIZE);
 
     /** Stores data about one circle */
-    private static class CircleArea {
+    static class CircleArea {
         int radius;
         int centerX;
         int centerY;
@@ -38,7 +44,7 @@ public class AngleDrawingView extends View {
     }
 
     /** Stores data about lines connecting circles **/
-    private static class CircleLine {
+    static class CircleLine {
         int startX;
         int startY;
         int endX;
@@ -53,20 +59,12 @@ public class AngleDrawingView extends View {
 
     }
 
-    public static class DrawingData {
-        HashMap<Integer, CircleArea> mCircles;
-        HashMap<Integer, CircleLine> mCircleLines;
-
-        DrawingData(HashMap<Integer, CircleArea> circles, HashMap<Integer, CircleLine> circleLines) {
-            this.mCircles = circles;
-            this.mCircleLines = circleLines;
-        }
-    }
-
     /** Paint to draw circles */
     private Paint mCirclePaint;
     /** Paint to draw lines */
     private Paint mLinePaint;
+
+    private Bitmap bitmapIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_foreground);
 
     /** Default circle radius */
     private final static int DEFAULT_RADIUS = 40;
@@ -107,6 +105,7 @@ public class AngleDrawingView extends View {
         return drawingData;
     }
 
+
     /**
      * Get the current angle between the lines, if the lines exists
      * @return angle
@@ -126,7 +125,7 @@ public class AngleDrawingView extends View {
      * @param line2 second line
      * @return the angle in radians
      */
-    public static double angleBetween2Lines(CircleLine line1, CircleLine line2)
+    private static double angleBetween2Lines(CircleLine line1, CircleLine line2)
     {
         double angle1 = Math.atan2(line1.startY - line1.endY,
                 line1.endX - line1.startX);
@@ -137,6 +136,11 @@ public class AngleDrawingView extends View {
         Log.w(TAG, "angle2: " + Math.toDegrees(angle2));
         return Math.abs(angle1-angle2) < Math.PI ? Math.abs(angle1-angle2) : 2*Math.PI - Math.abs(angle1-angle2);
 
+    }
+
+    public void hideAngle(boolean hide) {
+        hideAngle = hide;
+        invalidate();
     }
 
     /**
@@ -164,19 +168,23 @@ public class AngleDrawingView extends View {
     @Override
     public void onDraw(final Canvas canv) {
         // background bitmap to cover all area
-        //canv.drawBitmap(mBitmap, null, mMeasuredRect, null);
-
-        for (Integer key : mCircles.keySet()) {
-            CircleArea circle = mCircles.get(key);
-            if (circle != null) {
-                canv.drawCircle(circle.centerX, circle.centerY, circle.radius, mCirclePaint);
-            }
+        if (hideAngle && bitmapIcon != null) {
+            canv.drawColor(Color.DKGRAY);
+            canv.drawBitmap(bitmapIcon, null, iconRect, null);
         }
+        else {
+            for (Integer key : mCircles.keySet()) {
+                CircleArea circle = mCircles.get(key);
+                if (circle != null) {
+                    canv.drawCircle(circle.centerX, circle.centerY, circle.radius, mCirclePaint);
+                }
+            }
 
-        for (Integer key : mCircleLines.keySet()) {
-            CircleLine line = mCircleLines.get(key);
-            if (line != null) {
-                canv.drawLine(line.startX, line.startY, line.endX, line.endY, mLinePaint);
+            for (Integer key : mCircleLines.keySet()) {
+                CircleLine line = mCircleLines.get(key);
+                if (line != null) {
+                    canv.drawLine(line.startX, line.startY, line.endX, line.endY, mLinePaint);
+                }
             }
         }
     }
@@ -311,6 +319,7 @@ public class AngleDrawingView extends View {
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mMeasuredRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
+        iconRect.set(centerX-ICON_HALF_SIZE, centerY-ICON_HALF_SIZE, centerX+ICON_HALF_SIZE, centerY+ICON_HALF_SIZE);
 
         if (!initiated) {
             centerX = getMeasuredWidth()/2;

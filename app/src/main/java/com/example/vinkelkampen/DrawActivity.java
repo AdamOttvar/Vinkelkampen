@@ -27,7 +27,6 @@ public class DrawActivity extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         double currentAngle = drawingView.getCurrentAngle();
-        //String stringAngle = Double.toString(currentAngle);
         Locale locale = new Locale("sv", "SE");
         angleView.setText(String.format(locale, "%.2f", currentAngle));
 
@@ -37,7 +36,10 @@ public class DrawActivity extends AppCompatActivity {
     /** Called when the user hits the "guess angle" button **/
     public void guessAngle(View view) {
         Intent intent = new Intent(this, GuessActivity.class);
-
         startActivity(intent);
+    }
+
+    public void hideAngle(View view) {
+        drawingView.hideAngle(true);
     }
 }
