@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
-        android:onClick="hideAngle"
+        android:onClick="oppositeAngle"
         android:text="@string/opposite_angle"
         app:layout_constraintEnd_toStartOf="@+id/buttonRandom"
         app:layout_constraintTop_toTopOf="@+id/buttonRandom" />

@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -18,6 +19,8 @@ import java.util.HashMap;
 public class AngleDrawingView extends View {
     private static boolean initiated = false;
     private static boolean hideAngle = false;
+    private static boolean touchDisabled = false;
+    private static boolean oppositeAngle = false;
 
     private static int ICON_HALF_SIZE = 200;
 
@@ -28,6 +31,7 @@ public class AngleDrawingView extends View {
 
     private Rect mMeasuredRect = new Rect(0, 0, 1, 1);
     private Rect iconRect = new Rect(centerX-ICON_HALF_SIZE, centerY-ICON_HALF_SIZE, centerX+ICON_HALF_SIZE, centerY+ICON_HALF_SIZE);
+    private RectF arcRect = new RectF(0, 0, 0, 0);
 
     /** Stores data about one circle */
     static class CircleArea {
@@ -79,9 +83,6 @@ public class AngleDrawingView extends View {
     /** Lines between circles **/
     private static HashMap<Integer, CircleLine> mCircleLines = new HashMap<Integer, CircleLine>(CIRCLES_LIMIT-1);
 
-    /** Holding all data needed to draw */
-    private static DrawingData drawingData;
-
     /** Constructor **/
     public AngleDrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -98,15 +99,6 @@ public class AngleDrawingView extends View {
     }
 
     /**
-     * Get method for the drawing data
-     * @return The drawing data needed to draw the angle.
-     */
-    public DrawingData getDrawingData() {
-        return drawingData;
-    }
-
-
-    /**
      * Get the current angle between the lines, if the lines exists
      * @return angle
      */
@@ -114,6 +106,22 @@ public class AngleDrawingView extends View {
         double angle = 0;
         if (mCircleLines.size() == 2) {
             angle = angleBetween2Lines(mCircleLines.get(0),mCircleLines.get(1));
+        }
+        return angle;
+    }
+
+    /**
+     * Function for calculating the angle of a line
+     * @param line line that the angle should be returned for
+     * @return The angle in degrees
+     */
+    private static double getAngleLine(CircleLine line, boolean invertedY) {
+        double angle;
+        if (invertedY) {
+            angle = Math.atan2(line.startY - line.endY, line.endX - line.startX);
+        }
+        else {
+            angle = Math.atan2(line.endY-line.startY, line.endX - line.startX);
         }
         return Math.toDegrees(angle);
     }
@@ -127,19 +135,31 @@ public class AngleDrawingView extends View {
      */
     private static double angleBetween2Lines(CircleLine line1, CircleLine line2)
     {
-        double angle1 = Math.atan2(line1.startY - line1.endY,
-                line1.endX - line1.startX);
-        double angle2 = Math.atan2(line2.startY - line2.endY,
-                line2.endX - line2.startX);
+        double angle1 = getAngleLine(line1, true);
+        double angle2 = getAngleLine(line2, true);
 
-        Log.w(TAG, "angle1: " + Math.toDegrees(angle1));
-        Log.w(TAG, "angle2: " + Math.toDegrees(angle2));
-        return Math.abs(angle1-angle2) < Math.PI ? Math.abs(angle1-angle2) : 2*Math.PI - Math.abs(angle1-angle2);
+        return Math.abs(angle1-angle2) < 180 ? Math.abs(angle1-angle2) : 360 - Math.abs(angle1-angle2);
 
     }
 
     public void hideAngle(boolean hide) {
         hideAngle = hide;
+        invalidate();
+    }
+
+    public void toggleOppositeAngle() {
+        oppositeAngle = !oppositeAngle;
+        invalidate();
+    }
+
+    public void touchDisabled(boolean disabled) {
+        touchDisabled = disabled;
+        if (touchDisabled) {
+            mCirclePaint.setAlpha(0);
+        }
+        else {
+            mCirclePaint.setAlpha(1);
+        }
         invalidate();
     }
 
@@ -161,8 +181,26 @@ public class AngleDrawingView extends View {
         mCircleLines.put(mCircleLines.size(), new CircleLine(centerX, centerY, centerX+100, centerY-100));
         mCircleLines.put(mCircleLines.size(), new CircleLine(centerX, centerY, centerX+100, centerY+100));
 
-        drawingData = new DrawingData(mCircles, mCircleLines);
         initiated = true;
+    }
+
+    private void drawArc(final Canvas canv, CircleArea center, CircleLine line1, CircleLine line2) {
+        arcRect.set(center.centerX-DEFAULT_RADIUS*2, center.centerY-DEFAULT_RADIUS*2,
+                   center.centerX+DEFAULT_RADIUS*2, center.centerY+DEFAULT_RADIUS*2);
+
+        float startAngle = (float) getAngleLine(line1, false);
+        float endAngle = (float) getAngleLine(line2, false);
+        float betweenAngle = (float) getCurrentAngle();
+        float sweepAngle = 0 < endAngle-startAngle && endAngle-startAngle < 180 ?  betweenAngle : -betweenAngle;
+
+        if (startAngle > 0 && endAngle < 0 && Math.abs(endAngle-startAngle) > 180) {
+            sweepAngle = betweenAngle;
+        }
+
+        if (oppositeAngle) {
+            sweepAngle = sweepAngle < 0 ? sweepAngle + 360 : sweepAngle-360;
+        }
+        canv.drawArc(arcRect, startAngle, sweepAngle, false, mLinePaint);
     }
 
     @Override
@@ -186,6 +224,8 @@ public class AngleDrawingView extends View {
                     canv.drawLine(line.startX, line.startY, line.endX, line.endY, mLinePaint);
                 }
             }
+
+            drawArc(canv, mCircles.get(1), mCircleLines.get(0), mCircleLines.get(1));
         }
     }
 
@@ -193,98 +233,101 @@ public class AngleDrawingView extends View {
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         boolean handled = false;
+        if (touchDisabled) {
+            handled = true;
+        }
+        else {
+            Integer touchedCircleNbr;
+            CircleArea touchedCircle;
+            int xTouch;
+            int yTouch;
 
-        Integer touchedCircleNbr;
-        CircleArea touchedCircle;
-        int xTouch;
-        int yTouch;
+            // get touch event coordinates and make transparent circle from it
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    // it's the first pointer, so clear all existing pointers data
+                    activeCircle = null;
 
-        // get touch event coordinates and make transparent circle from it
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                // it's the first pointer, so clear all existing pointers data
-                activeCircle = null;
+                    xTouch = (int) event.getX(0);
+                    yTouch = (int) event.getY(0);
 
-                xTouch = (int) event.getX(0);
-                yTouch = (int) event.getY(0);
-
-                // check if we've touched inside some circle
-                touchedCircleNbr = getTouchedCircle(xTouch, yTouch);
-                if (touchedCircleNbr != null) {
-                    touchedCircle = mCircles.get(touchedCircleNbr);
-                    touchedCircle.centerX = xTouch;
-                    touchedCircle.centerY = yTouch;
-                    activeCircle = touchedCircleNbr;
-                }
-
-                invalidate();
-                handled = true;
-                break;
-
-
-            case MotionEvent.ACTION_MOVE:
-                Log.w(TAG, "Move");
-                xTouch = (int) event.getX(0);
-                yTouch = (int) event.getY(0);
-
-                if (activeCircle != null) {
-                    touchedCircle = mCircles.get(activeCircle);
-                    touchedCircle.centerX = xTouch;
-                    touchedCircle.centerY = yTouch;
-
-                    if (mCircleLines.size() == 2) {
-                        CircleLine line;
-                        switch (activeCircle) {
-                            case 0:
-                                Log.w(TAG, "Updating line 1");
-                                line = mCircleLines.get(0);
-                                line.endX = touchedCircle.centerX;
-                                line.endY = touchedCircle.centerY;
-                                mCircleLines.put(0, line);
-                                break;
-                            case 1:
-                                Log.w(TAG, "Updating line 1 and 2");
-                                line = mCircleLines.get(0);
-                                line.startX = touchedCircle.centerX;
-                                line.startY = touchedCircle.centerY;
-                                mCircleLines.put(0, line);
-                                line = mCircleLines.get(1);
-                                line.startX = touchedCircle.centerX;
-                                line.startY = touchedCircle.centerY;
-                                mCircleLines.put(1, line);
-                                break;
-                            case 2:
-                                Log.w(TAG, "Updating line 2");
-                                line = mCircleLines.get(1);
-                                line.endX = touchedCircle.centerX;
-                                line.endY = touchedCircle.centerY;
-                                mCircleLines.put(1, line);
-                                break;
-                            default:
-                                break;
-                        }
+                    // check if we've touched inside some circle
+                    touchedCircleNbr = getTouchedCircle(xTouch, yTouch);
+                    if (touchedCircleNbr != null) {
+                        touchedCircle = mCircles.get(touchedCircleNbr);
+                        touchedCircle.centerX = xTouch;
+                        touchedCircle.centerY = yTouch;
+                        activeCircle = touchedCircleNbr;
                     }
 
-                }
+                    invalidate();
+                    handled = true;
+                    break;
 
-                invalidate();
-                handled = true;
-                break;
 
-            case MotionEvent.ACTION_UP:
-                invalidate();
-                handled = true;
-                break;
+                case MotionEvent.ACTION_MOVE:
+                    Log.w(TAG, "Move");
+                    xTouch = (int) event.getX(0);
+                    yTouch = (int) event.getY(0);
 
-            case MotionEvent.ACTION_CANCEL:
-                handled = true;
-                break;
+                    if (activeCircle != null) {
+                        touchedCircle = mCircles.get(activeCircle);
+                        touchedCircle.centerX = xTouch;
+                        touchedCircle.centerY = yTouch;
 
-            default:
-                // do nothing
-                break;
+                        if (mCircleLines.size() == 2) {
+                            CircleLine line;
+                            switch (activeCircle) {
+                                case 0:
+                                    Log.w(TAG, "Updating line 1");
+                                    line = mCircleLines.get(0);
+                                    line.endX = touchedCircle.centerX;
+                                    line.endY = touchedCircle.centerY;
+                                    mCircleLines.put(0, line);
+                                    break;
+                                case 1:
+                                    Log.w(TAG, "Updating line 1 and 2");
+                                    line = mCircleLines.get(0);
+                                    line.startX = touchedCircle.centerX;
+                                    line.startY = touchedCircle.centerY;
+                                    mCircleLines.put(0, line);
+                                    line = mCircleLines.get(1);
+                                    line.startX = touchedCircle.centerX;
+                                    line.startY = touchedCircle.centerY;
+                                    mCircleLines.put(1, line);
+                                    break;
+                                case 2:
+                                    Log.w(TAG, "Updating line 2");
+                                    line = mCircleLines.get(1);
+                                    line.endX = touchedCircle.centerX;
+                                    line.endY = touchedCircle.centerY;
+                                    mCircleLines.put(1, line);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                    }
+
+                    invalidate();
+                    handled = true;
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                    invalidate();
+                    handled = true;
+                    break;
+
+                case MotionEvent.ACTION_CANCEL:
+                    handled = true;
+                    break;
+
+                default:
+                    // do nothing
+                    break;
+            }
         }
-
         return super.onTouchEvent(event) || handled;
     }
 
@@ -324,7 +367,6 @@ public class AngleDrawingView extends View {
         if (!initiated) {
             centerX = getMeasuredWidth()/2;
             centerY = getMeasuredHeight()/2;
-            // TODO: Smarter initiation of the circles. They are "reset" more frequent than necessary now
             initCircles();
         }
         invalidate();

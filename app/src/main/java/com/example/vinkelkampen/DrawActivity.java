@@ -39,7 +39,8 @@ public class DrawActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void hideAngle(View view) {
-        drawingView.hideAngle(true);
+    public void oppositeAngle(View view) {
+        drawingView.toggleOppositeAngle();
     }
+
 }
