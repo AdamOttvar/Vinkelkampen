@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class AngleDrawingView extends View {
     private static boolean initiated = false;
@@ -75,6 +76,12 @@ public class AngleDrawingView extends View {
 
     /** Number of circles used */
     private static final int CIRCLES_LIMIT = 3;
+
+    /** Default values for random angle drawing */
+    private static final int LINE_LENGTH = 300;
+    private static final double MAX_ANGLE = 3.1;
+    private static final double MIN_ANGLE = 0.035;
+    Random rand = new Random();
 
     /** All available circles */
     private static HashMap<Integer, CircleArea> mCircles = new HashMap<Integer, CircleArea>(CIRCLES_LIMIT);
@@ -152,6 +159,40 @@ public class AngleDrawingView extends View {
         invalidate();
     }
 
+    /**
+     * Sets a random angle using one random angle for each line.
+     */
+    public void setRandomAngle() {
+        double randomAngle1 = MIN_ANGLE + (MAX_ANGLE - MIN_ANGLE) * rand.nextDouble();
+        double randomAngle2 = MIN_ANGLE + (MAX_ANGLE - MIN_ANGLE) * rand.nextDouble();
+        boolean changeAngle = rand.nextBoolean();
+
+        hideAngle = true;
+
+        mCircles.clear();
+        mCircleLines.clear();
+        CircleArea newCircle = new CircleArea((int) (centerX+LINE_LENGTH*Math.cos(randomAngle1)),
+                                              (int) (centerY-LINE_LENGTH*Math.sin(randomAngle1)),
+                                              DEFAULT_RADIUS);
+        mCircles.put(0, newCircle);
+
+        newCircle = new CircleArea(centerX, centerY, DEFAULT_RADIUS);
+        mCircles.put(1, newCircle);
+
+        newCircle = new CircleArea((int) (centerX+LINE_LENGTH*Math.cos(randomAngle2)),
+                                   (int) (centerY+LINE_LENGTH*Math.sin(randomAngle2)),
+                                   DEFAULT_RADIUS);
+        mCircles.put(2, newCircle);
+
+        mCircleLines.put(mCircleLines.size(), new CircleLine(mCircles.get(1).centerX, mCircles.get(1).centerY, mCircles.get(0).centerX, mCircles.get(0).centerY));
+        mCircleLines.put(mCircleLines.size(), new CircleLine(mCircles.get(1).centerX, mCircles.get(1).centerY, mCircles.get(2).centerX, mCircles.get(2).centerY));
+
+        if (changeAngle) {
+            toggleOppositeAngle();
+        }
+
+    }
+
     public void touchDisabled(boolean disabled) {
         touchDisabled = disabled;
         if (touchDisabled) {
@@ -178,8 +219,8 @@ public class AngleDrawingView extends View {
         newCircle = new CircleArea(centerX+100, centerY+100, DEFAULT_RADIUS);
         mCircles.put(2, newCircle);
 
-        mCircleLines.put(mCircleLines.size(), new CircleLine(centerX, centerY, centerX+100, centerY-100));
-        mCircleLines.put(mCircleLines.size(), new CircleLine(centerX, centerY, centerX+100, centerY+100));
+        mCircleLines.put(mCircleLines.size(), new CircleLine(mCircles.get(1).centerX, mCircles.get(1).centerY, mCircles.get(0).centerX, mCircles.get(0).centerY));
+        mCircleLines.put(mCircleLines.size(), new CircleLine(mCircles.get(1).centerX, mCircles.get(1).centerY, mCircles.get(2).centerX, mCircles.get(2).centerY));
 
         initiated = true;
     }
@@ -307,7 +348,6 @@ public class AngleDrawingView extends View {
                                     break;
                             }
                         }
-
                     }
 
                     invalidate();

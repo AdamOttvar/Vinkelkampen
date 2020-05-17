@@ -43,4 +43,10 @@ public class DrawActivity extends AppCompatActivity {
         drawingView.toggleOppositeAngle();
     }
 
+    public void randomAngle(View view) {
+        Intent intent = new Intent(this, GuessActivity.class);
+        drawingView.setRandomAngle();
+        startActivity(intent);
+    }
+
 }
