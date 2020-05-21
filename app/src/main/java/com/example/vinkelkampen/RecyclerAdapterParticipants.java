@@ -13,12 +13,12 @@ import java.util.List;
 
 public class RecyclerAdapterParticipants extends RecyclerView.Adapter<RecyclerAdapterParticipants.ViewHolder> {
 
-    private List<String> mData;
+    private List<Participant> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    RecyclerAdapterParticipants(Context context, List<String> data) {
+    RecyclerAdapterParticipants(Context context, List<Participant> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -34,8 +34,8 @@ public class RecyclerAdapterParticipants extends RecyclerView.Adapter<RecyclerAd
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String animal = mData.get(position);
-        holder.myTextView.setText(animal);
+        String participantName = mData.get(position).getParticipantName();
+        holder.myTextView.setText(participantName);
     }
 
     // total number of rows
@@ -62,7 +62,7 @@ public class RecyclerAdapterParticipants extends RecyclerView.Adapter<RecyclerAd
     }
 
     // convenience method for getting data at click position
-    String getItem(int id) {
+    Participant getItem(int id) {
         return mData.get(id);
     }
 

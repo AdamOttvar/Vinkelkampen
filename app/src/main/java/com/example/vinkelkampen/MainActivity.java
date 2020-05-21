@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_KP_PLAYING = "com.example.vinkelkampen.EXTRA_KP";
-    private static Map<String, Integer> mapOfParticipants = new HashMap<>();
+    private static ArrayList<Participant> listOfParticipants = new ArrayList<>();
     private static List<String> KPStyret = Arrays.asList("Adam", "Dany", "Jocke", "Tobbe", "Victor");
 
     @Override
@@ -26,17 +27,17 @@ public class MainActivity extends AppCompatActivity {
 
     public static void populateWithKP(){
         for (int i = 0; i < KPStyret.size(); i++) {
-            mapOfParticipants.put(KPStyret.get(i), 0);
+            //mapOfParticipants.put(KPStyret.get(i), 0);
+            listOfParticipants.add(new Participant(KPStyret.get(i)));
         }
     }
 
     public static void clearParticipants(){
-        mapOfParticipants.clear();
+        listOfParticipants.clear();
     }
 
-    public static ArrayList<String> getParticipantsAsArray() {
-        Set<String> keys = mapOfParticipants.keySet();
-        return new ArrayList<String>(keys);
+    public static ArrayList<Participant> getParticipants() {
+        return listOfParticipants;
     }
 
     /** Called when the user hits the "new round" button **/

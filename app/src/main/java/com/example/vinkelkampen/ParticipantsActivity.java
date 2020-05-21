@@ -35,12 +35,12 @@ public class ParticipantsActivity extends AppCompatActivity implements RecyclerA
         }
 
         // data to populate the RecyclerView with
-        ArrayList<String> participantsNames = MainActivity.getParticipantsAsArray();
+        ArrayList<Participant> participants = MainActivity.getParticipants();
 
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerParticipants);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerAdapterParticipants(this, participantsNames);
+        adapter = new RecyclerAdapterParticipants(this, participants);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
     }
