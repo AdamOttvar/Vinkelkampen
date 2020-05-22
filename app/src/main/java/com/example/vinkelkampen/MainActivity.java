@@ -27,9 +27,12 @@ public class MainActivity extends AppCompatActivity {
 
     public static void populateWithKP(){
         for (int i = 0; i < KPStyret.size(); i++) {
-            //mapOfParticipants.put(KPStyret.get(i), 0);
             listOfParticipants.add(new Participant(KPStyret.get(i)));
         }
+    }
+
+    public static void addParticipant(String name) {
+        listOfParticipants.add(new Participant(name));
     }
 
     public static void clearParticipants(){
@@ -51,4 +54,5 @@ public class MainActivity extends AppCompatActivity {
         }
         startActivity(intent);
     }
+
 }

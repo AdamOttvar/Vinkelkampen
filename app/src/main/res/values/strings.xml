@@ -10,4 +10,6 @@
     <string name="random_angle">Slumpad vinkel</string>
     <string name="guess_angle">Gissa vinkel</string>
     <string name="result">Resultat</string>
+    <string name="default_name">Namn</string>
+    <string name="add">Lägg till</string>
 </resources>

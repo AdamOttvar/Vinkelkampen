@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewParticipants" />
+        app:layout_constraintTop_toBottomOf="@+id/editNewName" />
 
     <Button
         android:id="@+id/buttonStart"
@@ -44,5 +44,27 @@
         android:text="@string/start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editNewName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="@string/default_name"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName|textCapWords"
+        app:layout_constraintStart_toStartOf="@+id/recyclerParticipants"
+        app:layout_constraintTop_toBottomOf="@+id/textViewParticipants" />
+
+    <Button
+        android:id="@+id/buttonAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="addParticipant"
+        android:text="@string/add"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerParticipants"
+        app:layout_constraintTop_toBottomOf="@+id/textViewParticipants" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
