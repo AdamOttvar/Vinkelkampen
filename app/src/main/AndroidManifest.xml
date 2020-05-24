@@ -12,11 +12,11 @@
         <activity android:name=".GuessActivity"></activity>
         <activity
             android:name=".DrawActivity"
-            android:parentActivityName=".ParticipantsActivity"></activity>
+            android:parentActivityName=".ParticipantsActivity" />
         <activity
             android:name=".ParticipantsActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

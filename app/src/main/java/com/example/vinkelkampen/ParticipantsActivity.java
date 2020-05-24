@@ -1,25 +1,49 @@
 package com.example.vinkelkampen;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ParticipantsActivity extends AppCompatActivity implements RecyclerAdapterParticipants.ItemClickListener {
+    RecyclerView recyclerView;
     RecyclerAdapterParticipants adapter;
     EditText newParticipantName;
+
+    private void showDialogRemove(int pos){
+        final Participant player = adapter.getItem(pos);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ParticipantsActivity.this);
+        builder.setTitle(R.string.remove);
+        builder.setMessage(player.getParticipantName() + "?");
+
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which){
+                MainActivity.removeParticipant(player);
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which){
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +55,7 @@ public class ParticipantsActivity extends AppCompatActivity implements RecyclerA
         boolean isKP = intent.getBooleanExtra(MainActivity.EXTRA_KP_PLAYING, false);
 
         if (isKP) {
+            MainActivity.clearParticipants();
             MainActivity.populateWithKP();
         }
         else {
@@ -41,7 +66,7 @@ public class ParticipantsActivity extends AppCompatActivity implements RecyclerA
         ArrayList<Participant> participants = MainActivity.getParticipants();
 
         // Set up the RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recyclerParticipants);
+        recyclerView = findViewById(R.id.recyclerParticipants);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RecyclerAdapterParticipants(this, participants);
         adapter.setClickListener(this);
@@ -53,13 +78,16 @@ public class ParticipantsActivity extends AppCompatActivity implements RecyclerA
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+        showDialogRemove(position);
+        recyclerView.invalidate();
     }
 
     public void addParticipant(View view) {
         String name = newParticipantName.getText().toString();
         if (!name.equals("")) {
-            MainActivity.addParticipant(name);
+            boolean added = MainActivity.addParticipant(name);
+            if (!added)
+                Toast.makeText(this, "Already exists", Toast.LENGTH_SHORT).show();
         }
         newParticipantName.setText("");
     }

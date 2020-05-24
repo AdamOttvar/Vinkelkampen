@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Telephony;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -31,8 +32,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void addParticipant(String name) {
-        listOfParticipants.add(new Participant(name));
+    public static boolean addParticipant(String name) {
+        Participant comparePart = new Participant(name);
+        if (!listOfParticipants.contains(comparePart)) {
+            listOfParticipants.add(new Participant(name));
+            return true;
+        }
+
+        return false;
+    }
+
+    public static void removeParticipant(Participant player) {
+        listOfParticipants.remove(player);
     }
 
     public static void clearParticipants(){
