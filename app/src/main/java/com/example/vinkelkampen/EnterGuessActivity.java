@@ -12,12 +12,15 @@ import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class EnterGuessActivity extends AppCompatActivity implements RecyclerAdapterGuesses.ItemClickListener {
     RecyclerView recyclerView;
     RecyclerAdapterGuesses adapter;
+    TextView angleAnswer;
     float correctAngle;
 
     @Override
@@ -40,10 +43,33 @@ public class EnterGuessActivity extends AppCompatActivity implements RecyclerAda
         recyclerView.setAdapter(adapter);
     }
 
-    // For when the user clicks result, in order to see the rounds result
-    public void showResult(View view) {
-        adapter.updateResults(correctAngle);
+    // For when the user clicks diff, in order to see the rounds result
+    public void showDiff(View view) {
+        angleAnswer = findViewById(R.id.textAngleAnswer);
+        Locale locale = new Locale("sv", "SE");
+        angleAnswer.setText(String.format(locale, "%.2f", correctAngle));
+        adapter.updateDiff(correctAngle);
         adapter.notifyDataSetChanged();
+    }
+
+    // Show the high score
+    public void showHighScore(View view) {
+        adapter.updateDiff(correctAngle);
+        adapter.updateResult();
+        adapter.resetGuesses();
+        adapter.notifyDataSetChanged();
+        Intent intent = new Intent(this, HighscoreActivity.class);
+        startActivity(intent);
+    }
+
+    // Play a new round
+    public void newAngle(View view) {
+        adapter.updateDiff(correctAngle);
+        adapter.updateResult();
+        adapter.resetGuesses();
+        adapter.notifyDataSetChanged();
+        Intent intent = new Intent(this, DrawActivity.class);
+        startActivity(intent);
     }
 
     @Override

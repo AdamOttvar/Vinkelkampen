@@ -7,7 +7,7 @@
     tools:context=".EnterGuessActivity">
 
     <TextView
-        android:id="@+id/textGuessAngle2"
+        android:id="@+id/textGuessAngle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -25,17 +25,53 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonDiff" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonDiff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:onClick="showResult"
+        android:onClick="showDiff"
         android:text="@string/show_diff"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textGuessAngle2" />
+        app:layout_constraintTop_toBottomOf="@+id/textGuessAngle" />
+
+    <Button
+        android:id="@+id/buttonHighscore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:onClick="showHighScore"
+        android:text="@string/result"
+        app:layout_constraintEnd_toStartOf="@+id/buttonNewRound"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonNewRound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:onClick="newAngle"
+        android:text="@string/new_angle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textAngleAnswer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/deafult_angle"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonDiff"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerGuesses"
+        app:layout_constraintTop_toTopOf="@+id/buttonDiff" />
 </androidx.constraintlayout.widget.ConstraintLayout>

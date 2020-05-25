@@ -13,7 +13,6 @@ import java.util.Locale;
 public class DrawActivity extends AppCompatActivity {
     public static final String EXTRA_DRAWING_DATA = "com.example.vinkelkampen.EXTRA_DRAWING";
     AngleDrawingView drawingView;
-    TextView angleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,16 +20,6 @@ public class DrawActivity extends AppCompatActivity {
         setContentView(R.layout.activity_draw);
 
         drawingView = findViewById(R.id.drawingView);
-        angleView = findViewById(R.id.textAngle);
-    }
-
-    @Override
-    public boolean onTouchEvent(final MotionEvent event) {
-        double currentAngle = drawingView.getCurrentAngle();
-        Locale locale = new Locale("sv", "SE");
-        angleView.setText(String.format(locale, "%.2f", currentAngle));
-
-        return super.onTouchEvent(event);
     }
 
     /** Called when the user hits the "guess angle" button **/

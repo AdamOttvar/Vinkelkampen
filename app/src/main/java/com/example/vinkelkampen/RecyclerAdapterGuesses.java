@@ -73,9 +73,22 @@ public class RecyclerAdapterGuesses extends RecyclerView.Adapter<RecyclerView.Vi
         return TYPE_ITEM;
     }
 
-    public void updateResults(float correctAngle) {
+    void updateDiff(float correctAngle) {
         for (Participant player : mData) {
             player.setCurrentScore(Math.abs(player.getCurrentGuess() - correctAngle));
+        }
+    }
+
+    void updateResult() {
+        for (Participant player : mData) {
+            player.setTotalScore(player.getTotalScore() + player.getCurrentScore());
+        }
+    }
+
+    void resetGuesses() {
+        for (Participant player : mData) {
+            player.setCurrentScore(0);
+            player.setCurrentGuess(0);
         }
     }
 
