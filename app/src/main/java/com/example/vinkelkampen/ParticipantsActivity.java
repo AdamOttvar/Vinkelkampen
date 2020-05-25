@@ -7,10 +7,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -74,6 +77,18 @@ public class ParticipantsActivity extends AppCompatActivity implements RecyclerA
 
         // Set up name input
         newParticipantName = findViewById(R.id.editNewName);
+
+        newParticipantName.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    addParticipant(v);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -81,6 +96,8 @@ public class ParticipantsActivity extends AppCompatActivity implements RecyclerA
         showDialogRemove(position);
         recyclerView.invalidate();
     }
+
+
 
     public void addParticipant(View view) {
         String name = newParticipantName.getText().toString();
@@ -94,6 +111,8 @@ public class ParticipantsActivity extends AppCompatActivity implements RecyclerA
 
     /** Called when the user hits the "start round" button **/
     public void startRound(View view) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         Intent intent = new Intent(this, DrawActivity.class);
         startActivity(intent);
     }
