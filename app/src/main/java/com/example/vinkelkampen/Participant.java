@@ -11,18 +11,16 @@ import java.util.Objects;
 public class Participant {
     private String participantName;
     private float score;
+    private float currentGuess;
 
     public Participant(String name) {
         participantName = name;
         score = 0;
+        currentGuess = 0;
     }
 
     public String getParticipantName() {
         return participantName;
-    }
-
-    public void setParticipantName(String participantName) {
-        this.participantName = participantName;
     }
 
     public float getScore() {
@@ -31,6 +29,14 @@ public class Participant {
 
     public void setScore(float score) {
         this.score = score;
+    }
+
+    public float getCurrentGuess() {
+        return currentGuess;
+    }
+
+    public void setCurrentGuess(float currentGuess) {
+        this.currentGuess = currentGuess;
     }
 
     @NonNull

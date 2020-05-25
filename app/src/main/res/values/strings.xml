@@ -15,4 +15,6 @@
     <string name="remove">Ta bort</string>
     <string name="yes">Ja</string>
     <string name="no">Nej</string>
+    <string name="guess">Gissning</string>
+    <string name="add_guess">Gissa</string>
 </resources>

@@ -35,7 +35,9 @@ public class DrawActivity extends AppCompatActivity {
 
     /** Called when the user hits the "guess angle" button **/
     public void guessAngle(View view) {
-        Intent intent = new Intent(this, GuessActivity.class);
+        //Intent intent = new Intent(this, GuessActivity.class);
+        //startActivity(intent);
+        Intent intent = new Intent(this, EnterGuessActivity.class);
         startActivity(intent);
     }
 

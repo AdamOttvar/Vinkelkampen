@@ -21,7 +21,7 @@ public class ParticipantsActivity extends AppCompatActivity implements RecyclerA
     RecyclerAdapterParticipants adapter;
     EditText newParticipantName;
 
-    private void showDialogRemove(int pos){
+    private void showDialogRemove(int pos) {
         final Participant player = adapter.getItem(pos);
         AlertDialog.Builder builder = new AlertDialog.Builder(ParticipantsActivity.this);
         builder.setTitle(R.string.remove);
