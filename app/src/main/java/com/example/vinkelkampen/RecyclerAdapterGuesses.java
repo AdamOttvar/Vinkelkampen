@@ -19,12 +19,12 @@ public class RecyclerAdapterGuesses extends RecyclerView.Adapter<RecyclerView.Vi
     private List<Participant> mData;
     private ItemClickListener mClickListener;
 
-    // data is passed into the constructor
+    // Data is passed into the constructor
     RecyclerAdapterGuesses(Context context, List<Participant> data) {
         this.mData = data;
     }
 
-    // inflates the row layout from xml when needed
+    // Inflates the row layout from xml when needed
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -39,7 +39,7 @@ public class RecyclerAdapterGuesses extends RecyclerView.Adapter<RecyclerView.Vi
         else return null;
     }
 
-    // binds the data to the TextView in each row
+    // Binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderViewHolder){
@@ -58,12 +58,13 @@ public class RecyclerAdapterGuesses extends RecyclerView.Adapter<RecyclerView.Vi
             float participantGuess = mData.get(position-1).getCurrentGuess();
             itemViewHolder.textViewGuess.setText(String.format(new Locale("sv","SE"),"%.2f", participantGuess));
 
-            float participantScore = mData.get(position-1).getScore();
+            float participantScore = mData.get(position-1).getCurrentScore();
             itemViewHolder.textViewScore.setText(String.format(new Locale("sv","SE"),"%.2f", participantScore));
         }
 
     }
 
+    // To differ between header and list items
     @Override
     public int getItemViewType(int position) {
         if (position == 0) {
@@ -72,7 +73,13 @@ public class RecyclerAdapterGuesses extends RecyclerView.Adapter<RecyclerView.Vi
         return TYPE_ITEM;
     }
 
-    // total number of rows
+    public void updateResults(float correctAngle) {
+        for (Participant player : mData) {
+            player.setCurrentScore(Math.abs(player.getCurrentGuess() - correctAngle));
+        }
+    }
+
+    // Total number of rows
     @Override
     public int getItemCount() {
         return mData.size()+1;

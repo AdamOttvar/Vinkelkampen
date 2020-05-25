@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -17,11 +18,16 @@ import java.util.ArrayList;
 public class EnterGuessActivity extends AppCompatActivity implements RecyclerAdapterGuesses.ItemClickListener {
     RecyclerView recyclerView;
     RecyclerAdapterGuesses adapter;
+    float correctAngle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_guess);
+
+        // Get the Intent that started this activity and extract the angle
+        Intent intent = getIntent();
+        correctAngle = intent.getFloatExtra(GuessActivity.EXTRA_CORRECT_ANGLE, 0);
 
         // Data to populate the RecyclerView with
         ArrayList<Participant> participants = MainActivity.getParticipants();
@@ -32,6 +38,12 @@ public class EnterGuessActivity extends AppCompatActivity implements RecyclerAda
         adapter = new RecyclerAdapterGuesses(this, participants);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
+    }
+
+    // For when the user clicks result, in order to see the rounds result
+    public void showResult(View view) {
+        adapter.updateResults(correctAngle);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -49,6 +61,7 @@ public class EnterGuessActivity extends AppCompatActivity implements RecyclerAda
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         builder.setView(input);
 
+        // Key Listener for if the user uses enter key on virtual keyboard
         builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
@@ -62,17 +75,17 @@ public class EnterGuessActivity extends AppCompatActivity implements RecyclerAda
             }
         });
 
+        // For if the user clicks positive button "OK"
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO: Better handling of inputs (strings, commas, etc)
-                // or is it sufficient to have the input type set up correct?
                 String guessInput = input.getText().toString();
                 player.setCurrentGuess(Float.parseFloat(guessInput));
                 adapter.notifyDataSetChanged();
-                //recyclerView.invalidate();
             }
         });
+
+        // For if the user clicks the negative button "Cancel"
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

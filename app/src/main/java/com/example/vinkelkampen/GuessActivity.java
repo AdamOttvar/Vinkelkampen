@@ -2,6 +2,7 @@ package com.example.vinkelkampen;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import java.util.Locale;
 
 public class GuessActivity extends AppCompatActivity {
+    public static final String EXTRA_CORRECT_ANGLE = "com.example.vinkelkampen.EXTRA_ANGLE";
     AngleDrawingView guessingView;
     TextView angleAnswer;
     MediaPlayer mediaPlayer;
@@ -21,9 +23,9 @@ public class GuessActivity extends AppCompatActivity {
             revealAngle();
         }
     };
-    final Runnable hide = new Runnable() {
+    final Runnable guess = new Runnable() {
         public void run() {
-            guessingView.hideAngle(true);
+            startEnterGuessActivity();
         }
     };
 
@@ -44,7 +46,7 @@ public class GuessActivity extends AppCompatActivity {
         // It will also continue to play even if the user goes back to previous view.
         mediaPlayer.start();
         handler.postDelayed(reveal, 16000);
-        handler.postDelayed(hide, 49000);
+        handler.postDelayed(guess, 49000);
     }
 
     @Override
@@ -65,5 +67,12 @@ public class GuessActivity extends AppCompatActivity {
         angleAnswer = findViewById(R.id.textAngleAnswer);
         Locale locale = new Locale("sv", "SE");
         angleAnswer.setText(String.format(locale, "%.2f", currentAngle));
+    }
+
+    private void startEnterGuessActivity() {
+        Intent intent = new Intent(this, EnterGuessActivity.class);
+        double currentAngle = guessingView.getCurrentAngle();
+        intent.putExtra(EXTRA_CORRECT_ANGLE, (float) currentAngle);
+        startActivity(intent);
     }
 }

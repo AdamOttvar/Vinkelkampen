@@ -1,7 +1,6 @@
 package com.example.vinkelkampen;
 
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -10,25 +9,27 @@ import java.util.Objects;
 
 public class Participant {
     private String participantName;
-    private float score;
+    private float totalScore;
     private float currentGuess;
+    private float currentScore;
 
     public Participant(String name) {
         participantName = name;
-        score = 0;
+        totalScore = 0;
         currentGuess = 0;
+        currentScore = 0;
     }
 
     public String getParticipantName() {
         return participantName;
     }
 
-    public float getScore() {
-        return score;
+    public float getTotalScore() {
+        return totalScore;
     }
 
-    public void setScore(float score) {
-        this.score = score;
+    public void setTotalScore(float totalScore) {
+        this.totalScore = totalScore;
     }
 
     public float getCurrentGuess() {
@@ -37,6 +38,14 @@ public class Participant {
 
     public void setCurrentGuess(float currentGuess) {
         this.currentGuess = currentGuess;
+    }
+
+    public float getCurrentScore() {
+        return currentScore;
+    }
+
+    public void setCurrentScore(float currentScore) {
+        this.currentScore = currentScore;
     }
 
     @NonNull
