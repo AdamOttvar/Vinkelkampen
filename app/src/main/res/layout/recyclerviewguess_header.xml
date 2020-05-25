@@ -29,9 +29,9 @@
         android:id="@+id/participantScoreHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:text="@string/result"
-        android:textSize="20sp"
-        android:layout_marginStart="32dp" />
+        android:layout_marginStart="76dp"
+        android:layout_marginLeft="76dp"
+        android:text="@string/diff"
+        android:textSize="20sp" />
 
 </LinearLayout>

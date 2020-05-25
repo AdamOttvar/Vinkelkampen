@@ -17,4 +17,6 @@
     <string name="no">Nej</string>
     <string name="guess">Gissning</string>
     <string name="add_guess">Gissa</string>
+    <string name="diff">Diff</string>
+    <string name="show_diff">Visa diff</string>
 </resources>

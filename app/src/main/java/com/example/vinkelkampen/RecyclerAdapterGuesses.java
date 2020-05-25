@@ -47,7 +47,7 @@ public class RecyclerAdapterGuesses extends RecyclerView.Adapter<RecyclerView.Vi
 
             headerViewHolder.textViewName.setText(R.string.default_name);
             headerViewHolder.textViewGuess.setText(R.string.guess);
-            headerViewHolder.textViewScore.setText(R.string.result);
+            headerViewHolder.textViewScore.setText(R.string.diff);
         }
         else if (holder instanceof ItemViewHolder){
             final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
