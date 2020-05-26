@@ -59,6 +59,9 @@ public class GuessActivity extends AppCompatActivity {
     private void startEnterGuessActivity() {
         Intent intent = new Intent(this, EnterGuessActivity.class);
         double currentAngle = guessingView.getCurrentAngle();
+        if (MainActivity.isEasyMode()) {
+            currentAngle =  Math.round(currentAngle);
+        }
         intent.putExtra(EXTRA_CORRECT_ANGLE, (float) currentAngle);
         guessingView.touchDisabled(false);
         guessingView.hideAngle(false);

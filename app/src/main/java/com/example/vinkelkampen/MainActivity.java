@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,10 +17,24 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<Participant> listOfParticipants = new ArrayList<>();
     private static List<String> KPStyret = Arrays.asList("Adam", "Dany", "Jocke", "Tobbe", "Victor");
 
+    Switch modeSwitch;
+    private static boolean hardMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        modeSwitch = findViewById(R.id.switchMode);
+        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                hardMode = isChecked;
+            }
+        });
+    }
+
+    public static boolean isEasyMode() {
+        return !hardMode;
     }
 
     public static void populateWithKP(){
@@ -60,5 +76,6 @@ public class MainActivity extends AppCompatActivity {
         }
         startActivity(intent);
     }
+
 
 }

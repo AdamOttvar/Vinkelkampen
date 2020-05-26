@@ -20,4 +20,7 @@
     <string name="diff">Diff</string>
     <string name="show_diff">Visa diff</string>
     <string name="new_angle">Ny vinkel</string>
+    <string name="expert_mode">Expertläge</string>
+    <string name="normal">Normal</string>
+    <string name="expert">Expert</string>
 </resources>

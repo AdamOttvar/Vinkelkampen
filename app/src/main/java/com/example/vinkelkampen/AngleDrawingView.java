@@ -112,7 +112,7 @@ public class AngleDrawingView extends View {
         if (mCircleLines.size() == 2) {
             angle = angleBetween2Lines(mCircleLines.get(0),mCircleLines.get(1));
         }
-        return Math.round(angle);
+        return angle;
     }
 
     /**
