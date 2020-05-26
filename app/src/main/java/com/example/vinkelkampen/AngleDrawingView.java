@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -23,16 +22,41 @@ public class AngleDrawingView extends View {
     private static boolean touchDisabled = false;
     private static boolean oppositeAngle = false;
 
-    private static int ICON_HALF_SIZE = 200;
+    /** Icon to show when hiding the angle */
+    private Bitmap bitmapIcon = BitmapFactory.decodeResource(getResources(), R.drawable.vk_logo_no_bg);
+    private static int ICON_WIDTH_HALF = 175;
+    private static int ICON_HEIGHT_HALF = 220;
 
     private static int centerX;
     private static int centerY;
 
-    private static final String TAG = "CirclesDrawingView";
-
+    /** Rectangles to use for drawing */
     private Rect mMeasuredRect = new Rect(0, 0, 1, 1);
-    private Rect iconRect = new Rect(centerX-ICON_HALF_SIZE, centerY-ICON_HALF_SIZE, centerX+ICON_HALF_SIZE, centerY+ICON_HALF_SIZE);
+    private Rect iconRect = new Rect(centerX-ICON_WIDTH_HALF, centerY-ICON_HEIGHT_HALF, centerX+ICON_WIDTH_HALF, centerY+ICON_HEIGHT_HALF);
     private RectF arcRect = new RectF(0, 0, 0, 0);
+
+    /** Paint to draw circles */
+    private Paint mCirclePaint;
+    /** Paint to draw lines */
+    private Paint mLinePaint;
+
+    /** Default circle radius */
+    private final static int DEFAULT_RADIUS = 40;
+    /** Number of circles used */
+    private static final int NBR_OF_CIRCLES = 3;
+
+    /** Default values for random angle drawing */
+    private static final int LINE_LENGTH = 300;
+    private static final double MAX_ANGLE = 3.1;
+    private static final double MIN_ANGLE = 0.035;
+    Random rand = new Random();
+
+    /** All available circles */
+    private static HashMap<Integer, CircleArea> mCircles = new HashMap<Integer, CircleArea>(NBR_OF_CIRCLES);
+    private Integer activeCircle;
+
+    /** Lines between circles **/
+    private static HashMap<Integer, CircleLine> mCircleLines = new HashMap<Integer, CircleLine>(NBR_OF_CIRCLES -1);
 
     /** Stores data about one circle */
     static class CircleArea {
@@ -63,32 +87,6 @@ public class AngleDrawingView extends View {
         }
 
     }
-
-    /** Paint to draw circles */
-    private Paint mCirclePaint;
-    /** Paint to draw lines */
-    private Paint mLinePaint;
-
-    private Bitmap bitmapIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_foreground);
-
-    /** Default circle radius */
-    private final static int DEFAULT_RADIUS = 40;
-
-    /** Number of circles used */
-    private static final int CIRCLES_LIMIT = 3;
-
-    /** Default values for random angle drawing */
-    private static final int LINE_LENGTH = 300;
-    private static final double MAX_ANGLE = 3.1;
-    private static final double MIN_ANGLE = 0.035;
-    Random rand = new Random();
-
-    /** All available circles */
-    private static HashMap<Integer, CircleArea> mCircles = new HashMap<Integer, CircleArea>(CIRCLES_LIMIT);
-    private Integer activeCircle;
-
-    /** Lines between circles **/
-    private static HashMap<Integer, CircleLine> mCircleLines = new HashMap<Integer, CircleLine>(CIRCLES_LIMIT-1);
 
     /** Constructor **/
     public AngleDrawingView(Context context, AttributeSet attrs) {
@@ -307,7 +305,6 @@ public class AngleDrawingView extends View {
 
 
                 case MotionEvent.ACTION_MOVE:
-                    Log.w(TAG, "Move");
                     xTouch = (int) event.getX(0);
                     yTouch = (int) event.getY(0);
 
@@ -320,14 +317,12 @@ public class AngleDrawingView extends View {
                             CircleLine line;
                             switch (activeCircle) {
                                 case 0:
-                                    Log.w(TAG, "Updating line 1");
                                     line = mCircleLines.get(0);
                                     line.endX = touchedCircle.centerX;
                                     line.endY = touchedCircle.centerY;
                                     mCircleLines.put(0, line);
                                     break;
                                 case 1:
-                                    Log.w(TAG, "Updating line 1 and 2");
                                     line = mCircleLines.get(0);
                                     line.startX = touchedCircle.centerX;
                                     line.startY = touchedCircle.centerY;
@@ -338,7 +333,6 @@ public class AngleDrawingView extends View {
                                     mCircleLines.put(1, line);
                                     break;
                                 case 2:
-                                    Log.w(TAG, "Updating line 2");
                                     line = mCircleLines.get(1);
                                     line.endX = touchedCircle.centerX;
                                     line.endY = touchedCircle.centerY;
@@ -402,7 +396,7 @@ public class AngleDrawingView extends View {
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mMeasuredRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
-        iconRect.set(centerX-ICON_HALF_SIZE, centerY-ICON_HALF_SIZE, centerX+ICON_HALF_SIZE, centerY+ICON_HALF_SIZE);
+        iconRect.set(centerX-ICON_WIDTH_HALF, centerY-ICON_HEIGHT_HALF, centerX+ICON_WIDTH_HALF, centerY+ICON_HEIGHT_HALF);
 
         if (!initiated) {
             centerX = getMeasuredWidth()/2;
