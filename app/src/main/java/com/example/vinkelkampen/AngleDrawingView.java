@@ -52,11 +52,11 @@ public class AngleDrawingView extends View {
     Random rand = new Random();
 
     /** All available circles */
-    private static HashMap<Integer, CircleArea> mCircles = new HashMap<Integer, CircleArea>(NBR_OF_CIRCLES);
+    private static HashMap<Integer, CircleArea> mCircles = new HashMap<>(NBR_OF_CIRCLES);
     private Integer activeCircle;
 
     /** Lines between circles **/
-    private static HashMap<Integer, CircleLine> mCircleLines = new HashMap<Integer, CircleLine>(NBR_OF_CIRCLES -1);
+    private static HashMap<Integer, CircleLine> mCircleLines = new HashMap<>(NBR_OF_CIRCLES -1);
 
     /** Stores data about one circle */
     static class CircleArea {
@@ -169,21 +169,21 @@ public class AngleDrawingView extends View {
 
         mCircles.clear();
         mCircleLines.clear();
-        CircleArea newCircle = new CircleArea((int) (centerX+LINE_LENGTH*Math.cos(randomAngle1)),
+        CircleArea firstCircle = new CircleArea((int) (centerX+LINE_LENGTH*Math.cos(randomAngle1)),
                                               (int) (centerY-LINE_LENGTH*Math.sin(randomAngle1)),
                                               DEFAULT_RADIUS);
-        mCircles.put(0, newCircle);
+        mCircles.put(0, firstCircle);
 
-        newCircle = new CircleArea(centerX, centerY, DEFAULT_RADIUS);
-        mCircles.put(1, newCircle);
+        CircleArea middleCircle = new CircleArea(centerX, centerY, DEFAULT_RADIUS);
+        mCircles.put(1, middleCircle);
 
-        newCircle = new CircleArea((int) (centerX+LINE_LENGTH*Math.cos(randomAngle2)),
+        CircleArea thirdCircle = new CircleArea((int) (centerX+LINE_LENGTH*Math.cos(randomAngle2)),
                                    (int) (centerY+LINE_LENGTH*Math.sin(randomAngle2)),
                                    DEFAULT_RADIUS);
-        mCircles.put(2, newCircle);
+        mCircles.put(2, thirdCircle);
 
-        mCircleLines.put(mCircleLines.size(), new CircleLine(mCircles.get(1).centerX, mCircles.get(1).centerY, mCircles.get(0).centerX, mCircles.get(0).centerY));
-        mCircleLines.put(mCircleLines.size(), new CircleLine(mCircles.get(1).centerX, mCircles.get(1).centerY, mCircles.get(2).centerX, mCircles.get(2).centerY));
+        mCircleLines.put(mCircleLines.size(), new CircleLine(middleCircle.centerX, middleCircle.centerY, firstCircle.centerX, firstCircle.centerY));
+        mCircleLines.put(mCircleLines.size(), new CircleLine(middleCircle.centerX, middleCircle.centerY, thirdCircle.centerX, thirdCircle.centerY));
 
         if (changeAngle) {
             toggleOppositeAngle();
@@ -208,17 +208,17 @@ public class AngleDrawingView extends View {
     private void initCircles() {
         mCircles.clear();
         mCircleLines.clear();
-        CircleArea newCircle = new CircleArea(centerX+100, centerY-100, DEFAULT_RADIUS);
-        mCircles.put(0, newCircle);
+        CircleArea firstCircle = new CircleArea(centerX+100, centerY-100, DEFAULT_RADIUS);
+        mCircles.put(0, firstCircle);
 
-        newCircle = new CircleArea(centerX, centerY, DEFAULT_RADIUS);
-        mCircles.put(1, newCircle);
+        CircleArea middleCircle = new CircleArea(centerX, centerY, DEFAULT_RADIUS);
+        mCircles.put(1, middleCircle);
 
-        newCircle = new CircleArea(centerX+100, centerY+100, DEFAULT_RADIUS);
-        mCircles.put(2, newCircle);
+        CircleArea thirdCircle = new CircleArea(centerX+100, centerY+100, DEFAULT_RADIUS);
+        mCircles.put(2, thirdCircle);
 
-        mCircleLines.put(mCircleLines.size(), new CircleLine(mCircles.get(1).centerX, mCircles.get(1).centerY, mCircles.get(0).centerX, mCircles.get(0).centerY));
-        mCircleLines.put(mCircleLines.size(), new CircleLine(mCircles.get(1).centerX, mCircles.get(1).centerY, mCircles.get(2).centerX, mCircles.get(2).centerY));
+        mCircleLines.put(mCircleLines.size(), new CircleLine(middleCircle.centerX, middleCircle.centerY, firstCircle.centerX, firstCircle.centerY));
+        mCircleLines.put(mCircleLines.size(), new CircleLine(middleCircle.centerX, middleCircle.centerY, thirdCircle.centerX, thirdCircle.centerY));
 
         initiated = true;
     }
@@ -264,7 +264,10 @@ public class AngleDrawingView extends View {
                 }
             }
 
-            drawArc(canv, mCircles.get(1), mCircleLines.get(0), mCircleLines.get(1));
+            CircleArea centerCircle = mCircles.get(1);
+            if (centerCircle != null) {
+                drawArc(canv, centerCircle, mCircleLines.get(0), mCircleLines.get(1));
+            }
         }
     }
 
@@ -294,8 +297,10 @@ public class AngleDrawingView extends View {
                     touchedCircleNbr = getTouchedCircle(xTouch, yTouch);
                     if (touchedCircleNbr != null) {
                         touchedCircle = mCircles.get(touchedCircleNbr);
-                        touchedCircle.centerX = xTouch;
-                        touchedCircle.centerY = yTouch;
+                        if (touchedCircle != null) {
+                            touchedCircle.centerX = xTouch;
+                            touchedCircle.centerY = yTouch;
+                        }
                         activeCircle = touchedCircleNbr;
                     }
 
@@ -310,36 +315,47 @@ public class AngleDrawingView extends View {
 
                     if (activeCircle != null) {
                         touchedCircle = mCircles.get(activeCircle);
-                        touchedCircle.centerX = xTouch;
-                        touchedCircle.centerY = yTouch;
+                        if (touchedCircle != null) {
+                            touchedCircle.centerX = xTouch;
+                            touchedCircle.centerY = yTouch;
 
-                        if (mCircleLines.size() == 2) {
-                            CircleLine line;
-                            switch (activeCircle) {
-                                case 0:
-                                    line = mCircleLines.get(0);
-                                    line.endX = touchedCircle.centerX;
-                                    line.endY = touchedCircle.centerY;
-                                    mCircleLines.put(0, line);
-                                    break;
-                                case 1:
-                                    line = mCircleLines.get(0);
-                                    line.startX = touchedCircle.centerX;
-                                    line.startY = touchedCircle.centerY;
-                                    mCircleLines.put(0, line);
-                                    line = mCircleLines.get(1);
-                                    line.startX = touchedCircle.centerX;
-                                    line.startY = touchedCircle.centerY;
-                                    mCircleLines.put(1, line);
-                                    break;
-                                case 2:
-                                    line = mCircleLines.get(1);
-                                    line.endX = touchedCircle.centerX;
-                                    line.endY = touchedCircle.centerY;
-                                    mCircleLines.put(1, line);
-                                    break;
-                                default:
-                                    break;
+
+                            if (mCircleLines.size() == 2) {
+                                CircleLine line;
+                                switch (activeCircle) {
+                                    case 0:
+                                        line = mCircleLines.get(0);
+                                        if (line != null) {
+                                            line.endX = touchedCircle.centerX;
+                                            line.endY = touchedCircle.centerY;
+                                        }
+                                        mCircleLines.put(0, line);
+                                        break;
+                                    case 1:
+                                        line = mCircleLines.get(0);
+                                        if (line != null) {
+                                            line.startX = touchedCircle.centerX;
+                                            line.startY = touchedCircle.centerY;
+                                        }
+                                        mCircleLines.put(0, line);
+                                        line = mCircleLines.get(1);
+                                        if (line != null) {
+                                            line.startX = touchedCircle.centerX;
+                                            line.startY = touchedCircle.centerY;
+                                        }
+                                        mCircleLines.put(1, line);
+                                        break;
+                                    case 2:
+                                        line = mCircleLines.get(1);
+                                        if (line != null) {
+                                            line.endX = touchedCircle.centerX;
+                                            line.endY = touchedCircle.centerY;
+                                        }
+                                        mCircleLines.put(1, line);
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
                         }
                     }
