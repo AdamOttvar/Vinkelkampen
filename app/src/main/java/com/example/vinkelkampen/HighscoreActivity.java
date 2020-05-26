@@ -25,7 +25,7 @@ public class HighscoreActivity extends AppCompatActivity {
         // Set up the RecyclerView with adapter
         recyclerView = findViewById(R.id.recyclerHighscore);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerAdapterHighscore(this, participants);
+        adapter = new RecyclerAdapterHighscore(participants);
         recyclerView.setAdapter(adapter);
     }
 

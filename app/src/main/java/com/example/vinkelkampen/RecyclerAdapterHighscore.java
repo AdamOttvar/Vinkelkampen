@@ -1,6 +1,5 @@
 package com.example.vinkelkampen;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ public class RecyclerAdapterHighscore extends RecyclerView.Adapter<RecyclerView.
     private List<Participant> mData;
 
     // Data is passed into the constructor
-    RecyclerAdapterHighscore(Context context, List<Participant> data) {
+    RecyclerAdapterHighscore(List<Participant> data) {
         this.mData = data;
     }
 
@@ -35,7 +34,7 @@ public class RecyclerAdapterHighscore extends RecyclerView.Adapter<RecyclerView.
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerviewscore_header, parent, false);
             return new com.example.vinkelkampen.RecyclerAdapterGuesses.HeaderViewHolder(itemView);
         }
-        else return null;
+        else throw new IllegalArgumentException("Unexpected viewType: " + viewType);
     }
 
     // Binds the data to the TextView in each row
@@ -88,7 +87,7 @@ public class RecyclerAdapterHighscore extends RecyclerView.Adapter<RecyclerView.
     }
 
     // Stores and recycles views for items as they are scrolled off screen
-    public class ItemViewHolderScore extends RecyclerView.ViewHolder {
+    public static class ItemViewHolderScore extends RecyclerView.ViewHolder {
         TextView textViewName;
         TextView textViewScore;
 
@@ -99,12 +98,5 @@ public class RecyclerAdapterHighscore extends RecyclerView.Adapter<RecyclerView.
         }
 
     }
-
-    // convenience method for getting data at click position
-    Participant getItem(int id) {
-        return mData.get(id-1);
-    }
-
-
 
 }

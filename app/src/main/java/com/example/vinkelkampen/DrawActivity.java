@@ -4,14 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
-import java.util.Locale;
 
 public class DrawActivity extends AppCompatActivity {
-    public static final String EXTRA_DRAWING_DATA = "com.example.vinkelkampen.EXTRA_DRAWING";
     AngleDrawingView drawingView;
 
     @Override

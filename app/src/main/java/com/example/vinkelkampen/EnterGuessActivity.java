@@ -38,7 +38,7 @@ public class EnterGuessActivity extends AppCompatActivity implements RecyclerAda
         // Set up the RecyclerView with adapter
         recyclerView = findViewById(R.id.recyclerGuesses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerAdapterGuesses(this, participants);
+        adapter = new RecyclerAdapterGuesses(participants);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
     }

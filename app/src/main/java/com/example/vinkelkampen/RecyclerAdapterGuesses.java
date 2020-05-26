@@ -1,6 +1,5 @@
 package com.example.vinkelkampen;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ public class RecyclerAdapterGuesses extends RecyclerView.Adapter<RecyclerView.Vi
     private ItemClickListener mClickListener;
 
     // Data is passed into the constructor
-    RecyclerAdapterGuesses(Context context, List<Participant> data) {
+    RecyclerAdapterGuesses(List<Participant> data) {
         this.mData = data;
     }
 
@@ -36,7 +35,7 @@ public class RecyclerAdapterGuesses extends RecyclerView.Adapter<RecyclerView.Vi
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerviewguess_header, parent, false);
             return new HeaderViewHolder(itemView);
         }
-        else return null;
+        else throw new IllegalArgumentException("Unexpected viewType: " + viewType);
     }
 
     // Binds the data to the TextView in each row
@@ -99,7 +98,7 @@ public class RecyclerAdapterGuesses extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     // Stores and recycles views for header
-    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
         TextView textViewGuess;
         TextView textViewScore;

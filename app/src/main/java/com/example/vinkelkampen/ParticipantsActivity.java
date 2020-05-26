@@ -1,13 +1,10 @@
 package com.example.vinkelkampen;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -112,7 +109,8 @@ public class ParticipantsActivity extends AppCompatActivity implements RecyclerA
     /** Called when the user hits the "start round" button **/
     public void startRound(View view) {
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (imm != null)
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         Intent intent = new Intent(this, DrawActivity.class);
         startActivity(intent);
     }

@@ -13,38 +13,38 @@ public class Participant {
     private float currentGuess;
     private float currentScore;
 
-    public Participant(String name) {
+    Participant(String name) {
         participantName = name;
         totalScore = 0;
         currentGuess = 0;
         currentScore = 0;
     }
 
-    public String getParticipantName() {
+    String getParticipantName() {
         return participantName;
     }
 
-    public float getTotalScore() {
+    float getTotalScore() {
         return totalScore;
     }
 
-    public void setTotalScore(float totalScore) {
+    void setTotalScore(float totalScore) {
         this.totalScore = totalScore;
     }
 
-    public float getCurrentGuess() {
+    float getCurrentGuess() {
         return currentGuess;
     }
 
-    public void setCurrentGuess(float currentGuess) {
+    void setCurrentGuess(float currentGuess) {
         this.currentGuess = currentGuess;
     }
 
-    public float getCurrentScore() {
+    float getCurrentScore() {
         return currentScore;
     }
 
-    public void setCurrentScore(float currentScore) {
+    void setCurrentScore(float currentScore) {
         this.currentScore = currentScore;
     }
 
