@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi;
 
 import java.util.Objects;
 
-public class Participant {
+public class Participant implements Comparable<Participant> {
     private String participantName;
     private float totalScore;
     private float currentGuess;
@@ -66,5 +66,11 @@ public class Participant {
     @Override
     public int hashCode() {
         return Objects.hash(participantName);
+    }
+
+    @Override
+    public int compareTo(@NonNull Participant o) {
+        float compareTo=((Participant) o).getTotalScore();
+        return Math.round(this.totalScore-compareTo);
     }
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HighscoreActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -25,6 +26,7 @@ public class HighscoreActivity extends AppCompatActivity {
         // Set up the RecyclerView with adapter
         recyclerView = findViewById(R.id.recyclerHighscore);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Collections.sort(participants);
         adapter = new RecyclerAdapterHighscore(participants);
         recyclerView.setAdapter(adapter);
     }
