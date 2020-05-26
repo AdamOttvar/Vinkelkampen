@@ -27,6 +27,7 @@ public class AngleDrawingView extends View {
     private static int ICON_WIDTH_HALF = 175;
     private static int ICON_HEIGHT_HALF = 220;
 
+    private static Integer oldOrientation;
     private static int centerX;
     private static int centerY;
 
@@ -101,6 +102,8 @@ public class AngleDrawingView extends View {
         mLinePaint.setStrokeWidth(10);
         mLinePaint.setStyle(Paint.Style.STROKE);
 
+        if (oldOrientation == null)
+            oldOrientation = getResources().getConfiguration().orientation;
     }
 
     /**
@@ -411,14 +414,19 @@ public class AngleDrawingView extends View {
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mMeasuredRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
-        iconRect.set(centerX-ICON_WIDTH_HALF, centerY-ICON_HEIGHT_HALF, centerX+ICON_WIDTH_HALF, centerY+ICON_HEIGHT_HALF);
 
-        if (!initiated) {
+        // Init the circles if not initiated or reset the center and angle if orientation is changed
+        if (!initiated || oldOrientation != getResources().getConfiguration().orientation) {
             centerX = getMeasuredWidth()/2;
             centerY = getMeasuredHeight()/2;
             initCircles();
+            oldOrientation = getResources().getConfiguration().orientation;
+            invalidate();
         }
+
+        mMeasuredRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
+        iconRect.set(centerX-ICON_WIDTH_HALF, centerY-ICON_HEIGHT_HALF, centerX+ICON_WIDTH_HALF, centerY+ICON_HEIGHT_HALF);
+
         invalidate();
     }
 }
