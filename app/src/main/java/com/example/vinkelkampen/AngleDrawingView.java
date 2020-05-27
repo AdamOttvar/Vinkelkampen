@@ -107,10 +107,24 @@ public class AngleDrawingView extends View {
     }
 
     /**
-     * Get the current angle between the lines, if the lines exists
+     * Get the current angle between the lines, if the lines exists.
+     * Takes the oppositeAngle choice into account.
      * @return angle
      */
     public double getCurrentAngle() {
+        double angle = 0;
+        if (mCircleLines.size() == 2) {
+            angle = angleBetween2Lines(mCircleLines.get(0),mCircleLines.get(1));
+        }
+        // TODO: This is a bug. Returns the wrong angle if opposite angle is displayed.
+        return oppositeAngle ? 360 - angle : angle;
+    }
+
+    /**
+     * Get the smallest angle between the lines
+     * @return angle
+     */
+    private double getSmallestAngle() {
         double angle = 0;
         if (mCircleLines.size() == 2) {
             angle = angleBetween2Lines(mCircleLines.get(0),mCircleLines.get(1));
@@ -232,7 +246,7 @@ public class AngleDrawingView extends View {
 
         float startAngle = (float) getAngleLine(line1, false);
         float endAngle = (float) getAngleLine(line2, false);
-        float betweenAngle = (float) getCurrentAngle();
+        float betweenAngle = (float) getSmallestAngle();
         float sweepAngle = 0 < endAngle-startAngle && endAngle-startAngle < 180 ?  betweenAngle : -betweenAngle;
 
         if (startAngle > 0 && endAngle < 0 && Math.abs(endAngle-startAngle) > 180) {
@@ -242,6 +256,8 @@ public class AngleDrawingView extends View {
         if (oppositeAngle) {
             sweepAngle = sweepAngle < 0 ? sweepAngle + 360 : sweepAngle-360;
         }
+
+
         canv.drawArc(arcRect, startAngle, sweepAngle, false, mLinePaint);
     }
 
