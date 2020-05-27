@@ -38,7 +38,8 @@ public class GuessActivity extends AppCompatActivity {
 
         // TODO: Handle media player better.
         // Now it will start multiple media players if the device is flipped during playing.
-        // It will also continue to play even if the user goes back to previous view.
+        // It will also continue to play even if the user goes back to previous view or exits the
+        // app.
         mediaPlayer.start();
         handler.postDelayed(reveal, 16000);
         handler.postDelayed(guess, 49000);

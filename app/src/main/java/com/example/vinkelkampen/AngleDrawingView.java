@@ -116,7 +116,6 @@ public class AngleDrawingView extends View {
         if (mCircleLines.size() == 2) {
             angle = angleBetween2Lines(mCircleLines.get(0),mCircleLines.get(1));
         }
-        // TODO: This is a bug. Returns the wrong angle if opposite angle is displayed.
         return oppositeAngle ? 360 - angle : angle;
     }
 
