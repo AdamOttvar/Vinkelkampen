@@ -9,23 +9,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HighscoreActivity"></activity>
-        <activity android:name=".EnterGuessActivity" />
-        <activity android:name=".GuessActivity" />
-        <activity
-            android:name=".DrawActivity"
-            android:parentActivityName=".ParticipantsActivity" />
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ParticipantsActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity
+            android:name=".DrawActivity"
+            android:parentActivityName=".ParticipantsActivity" />
+        <activity android:name=".GuessActivity"
+            android:parentActivityName=".DrawActivity"/>
+        <activity android:name=".EnterGuessActivity"
+            android:parentActivityName=".GuessActivity"/>
+        <activity android:name=".HighscoreActivity"
+            android:parentActivityName=".EnterGuessActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"
