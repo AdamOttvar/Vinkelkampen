@@ -47,7 +47,7 @@ public class EnterGuessActivity extends AppCompatActivity implements RecyclerAda
     public void showDiff(View view) {
         angleAnswer = findViewById(R.id.textAngleAnswer);
         Locale locale = new Locale("sv", "SE");
-        angleAnswer.setText(String.format(locale, "%.2f", correctAngle));
+        angleAnswer.setText(String.format(MainActivity.locale, MainActivity.angleFormat, correctAngle));
         adapter.updateDiff(correctAngle);
         adapter.notifyDataSetChanged();
     }

@@ -11,9 +11,12 @@ import android.widget.Switch;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_KP_PLAYING = "com.example.vinkelkampen.EXTRA_KP";
+    public static Locale locale;
+    public static String angleFormat;
     private static ArrayList<Participant> listOfParticipants = new ArrayList<>();
     private static List<String> KPStyret = Arrays.asList("Adam", "Dany", "Jocke", "Tobbe", "Victor");
 
@@ -25,10 +28,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        locale = new Locale("sv", "SE");
+        angleFormat = "%.0f";
+
         modeSwitch = findViewById(R.id.switchMode);
         modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 hardMode = isChecked;
+                angleFormat = hardMode ? "%.2f" : "%.0f";
             }
         });
     }

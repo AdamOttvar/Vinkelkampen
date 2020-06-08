@@ -55,10 +55,10 @@ public class RecyclerAdapterGuesses extends RecyclerView.Adapter<RecyclerView.Vi
             itemViewHolder.textViewName.setText(participantName);
 
             float participantGuess = mData.get(position-1).getCurrentGuess();
-            itemViewHolder.textViewGuess.setText(String.format(new Locale("sv","SE"),"%.2f", participantGuess));
+            itemViewHolder.textViewGuess.setText(String.format(MainActivity.locale,MainActivity.angleFormat, participantGuess));
 
             float participantScore = mData.get(position-1).getCurrentScore();
-            itemViewHolder.textViewScore.setText(String.format(new Locale("sv","SE"),"%.2f", participantScore));
+            itemViewHolder.textViewScore.setText(String.format(MainActivity.locale,MainActivity.angleFormat, participantScore));
         }
 
     }

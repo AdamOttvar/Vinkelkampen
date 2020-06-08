@@ -53,7 +53,7 @@ public class RecyclerAdapterHighscore extends RecyclerView.Adapter<RecyclerView.
             itemViewHolder.textViewName.setText(participantName);
 
             float participantScore = mData.get(position-1).getTotalScore();
-            itemViewHolder.textViewScore.setText(String.format(new Locale("sv","SE"),"%.2f", participantScore));
+            itemViewHolder.textViewScore.setText(String.format(MainActivity.locale,MainActivity.angleFormat, participantScore));
         }
 
     }
