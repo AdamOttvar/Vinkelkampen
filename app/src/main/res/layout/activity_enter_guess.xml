@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="@string/deafult_angle"
+        android:text="@string/default_angle"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/buttonDiff"
         app:layout_constraintEnd_toEndOf="@+id/recyclerGuesses"

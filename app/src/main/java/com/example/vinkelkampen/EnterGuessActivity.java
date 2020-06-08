@@ -46,7 +46,6 @@ public class EnterGuessActivity extends AppCompatActivity implements RecyclerAda
     // For when the user clicks diff, in order to see the rounds result
     public void showDiff(View view) {
         angleAnswer = findViewById(R.id.textAngleAnswer);
-        Locale locale = new Locale("sv", "SE");
         angleAnswer.setText(String.format(MainActivity.locale, MainActivity.angleFormat, correctAngle));
         adapter.updateDiff(correctAngle);
         adapter.notifyDataSetChanged();
