@@ -32,6 +32,10 @@ public class EnterGuessActivity extends AppCompatActivity implements RecyclerAda
         Intent intent = getIntent();
         correctAngle = intent.getFloatExtra(GuessActivity.EXTRA_CORRECT_ANGLE, 0);
 
+        // Text view for displaying correct angle
+        angleAnswer = findViewById(R.id.textAngleAnswer);
+        angleAnswer.setText(String.format(MainActivity.locale, MainActivity.angleFormat, 0.0f));
+
         // Data to populate the RecyclerView with
         ArrayList<Participant> participants = MainActivity.getParticipants();
 
@@ -45,7 +49,6 @@ public class EnterGuessActivity extends AppCompatActivity implements RecyclerAda
 
     // For when the user clicks diff, in order to see the rounds result
     public void showDiff(View view) {
-        angleAnswer = findViewById(R.id.textAngleAnswer);
         angleAnswer.setText(String.format(MainActivity.locale, MainActivity.angleFormat, correctAngle));
         adapter.updateDiff(correctAngle);
         adapter.notifyDataSetChanged();
