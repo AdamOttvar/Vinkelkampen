@@ -42,7 +42,7 @@ public class GuessActivity extends AppCompatActivity {
         // app.
         mediaPlayer.start();
         handler.postDelayed(reveal, 16000);
-        handler.postDelayed(guess, 49000);
+        handler.postDelayed(guess, 48000);
     }
 
     @Override
