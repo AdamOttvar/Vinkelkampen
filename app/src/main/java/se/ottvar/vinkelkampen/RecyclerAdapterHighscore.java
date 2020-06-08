@@ -1,4 +1,4 @@
-package com.example.vinkelkampen;
+package se.ottvar.vinkelkampen;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.Locale;
 
 public class RecyclerAdapterHighscore extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
@@ -32,7 +31,7 @@ public class RecyclerAdapterHighscore extends RecyclerView.Adapter<RecyclerView.
         }
         else if (viewType == TYPE_HEADER) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerviewscore_header, parent, false);
-            return new com.example.vinkelkampen.RecyclerAdapterGuesses.HeaderViewHolder(itemView);
+            return new RecyclerAdapterGuesses.HeaderViewHolder(itemView);
         }
         else throw new IllegalArgumentException("Unexpected viewType: " + viewType);
     }

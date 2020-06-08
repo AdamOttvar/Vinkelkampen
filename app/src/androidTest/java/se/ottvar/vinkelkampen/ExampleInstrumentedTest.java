@@ -1,4 +1,4 @@
-package com.example.vinkelkampen;
+package se.ottvar.vinkelkampen;
 
 import android.content.Context;
 

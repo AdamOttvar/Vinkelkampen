@@ -1,4 +1,4 @@
-package com.example.vinkelkampen;
+package se.ottvar.vinkelkampen;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class EnterGuessActivity extends AppCompatActivity implements RecyclerAdapterGuesses.ItemClickListener {
     RecyclerView recyclerView;

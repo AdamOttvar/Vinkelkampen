@@ -1,4 +1,4 @@
-package com.example.vinkelkampen;
+package se.ottvar.vinkelkampen;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
