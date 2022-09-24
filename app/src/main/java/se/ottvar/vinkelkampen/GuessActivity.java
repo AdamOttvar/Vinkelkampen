@@ -9,8 +9,8 @@ import android.os.Handler;
 
 public class GuessActivity extends AppCompatActivity {
     public static final String EXTRA_CORRECT_ANGLE = "com.example.vinkelkampen.EXTRA_ANGLE";
-    AngleDrawingView guessingView;
-    MediaPlayer mediaPlayer;
+    static AngleDrawingView guessingView;
+    static MediaPlayer mediaPlayer;
 
     final Handler handler = new Handler();
     final Runnable reveal = new Runnable() {
@@ -32,7 +32,9 @@ public class GuessActivity extends AppCompatActivity {
 
         mediaPlayer = MediaPlayer.create(this, R.raw.vinkelkampen);
 
-        guessingView = findViewById(R.id.guessingView);
+        if (guessingView == null) {
+            guessingView = findViewById(R.id.guessingView);
+        }
         guessingView.touchDisabled(true);
         guessingView.hideAngle(true);
 
@@ -40,6 +42,9 @@ public class GuessActivity extends AppCompatActivity {
         // Now it will start multiple media players if the device is flipped during playing.
         // It will also continue to play even if the user goes back to previous view or exits the
         // app.
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
         mediaPlayer.start();
         handler.postDelayed(reveal, 16000);
         handler.postDelayed(guess, 48000);
@@ -66,6 +71,7 @@ public class GuessActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_CORRECT_ANGLE, (float) currentAngle);
         guessingView.touchDisabled(false);
         guessingView.hideAngle(false);
+        finish();
         startActivity(intent);
     }
 }

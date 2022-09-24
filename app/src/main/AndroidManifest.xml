@@ -24,7 +24,8 @@
             android:name=".DrawActivity"
             android:parentActivityName=".ParticipantsActivity" />
         <activity android:name=".GuessActivity"
-            android:parentActivityName=".DrawActivity"/>
+            android:parentActivityName=".DrawActivity"
+            android:launchMode="singleInstance"/>
         <activity android:name=".EnterGuessActivity"
             android:parentActivityName=".GuessActivity"/>
         <activity android:name=".HighscoreActivity"
